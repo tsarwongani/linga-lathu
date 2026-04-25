@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access.",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["patient", "doctor", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fullName", "phoneNumber", "role"]
+    },
+    "Hospital": {
+      "title": "Hospital",
+      "description": "A healthcare facility in the system.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "location": { "type": "string" },
+        "patientLimitPerDay": { "type": "integer" },
+        "workingHours": { "type": "string" }
+      },
+      "required": ["name", "location"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "A scheduled medical consultation.",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "hospitalId": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "timeSlot": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "checked-in", "completed", "cancelled"] },
+        "symptomCategory": { "type": "string", "enum": ["Emergency", "Urgent", "Non-urgent"] },
+        "symptoms": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["patientId", "hospitalId", "date", "timeSlot", "status"]
+    },
+    "QueueEntry": {
+      "title": "QueueEntry",
+      "description": "An entry in the daily hospital queue.",
+      "type": "object",
+      "properties": {
+        "hospitalId": { "type": "string" },
+        "patientId": { "type": "string" },
+        "queueNumber": { "type": "integer" },
+        "status": { "type": "string", "enum": ["waiting", "calling", "serving", "completed"] },
+        "checkInTime": { "type": "string", "format": "date-time" }
+      },
+      "required": ["hospitalId", "patientId", "queueNumber", "status"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Primary user profiles."
+    },
+    "hospitals/{hospitalId}": {
+      "schema": "Hospital",
+      "description": "Hospital details."
+    },
+    "appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Patient appointments."
+    },
+    "hospitals/{hospitalId}/queue/{queueId}": {
+      "schema": "QueueEntry",
+      "description": "Real-time queue for each hospital."
+    }
+  }
+}
